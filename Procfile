@@ -1,0 +1,1 @@
+web: gunicorn maraliastats.wsgi --log-file -
