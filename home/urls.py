@@ -5,8 +5,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns =[
-    path('', views.welcome, name='home'),
-    path('/signin', views.signin, name='signing'),
+    path('', views.signin, name='signing'),
+    path('/welcome', views.welcome, name='home'),
     path('/signin', views.logout_user, name='logout_user'),
     path('/generaldata', views.generaldata, name='general'),
     path('/allcase', views.allcase, name='all_case'),
@@ -20,5 +20,6 @@ urlpatterns =[
     path('<int:id>/updatecdeath/', views.updatedeath, name='updateDeath'),
     path('/upgradecase', views.upgradecase, name='upgrade_case'),
     path('/upgradesevere', views.upgradesevere, name='upgrade_severe'),
-    path('/upgradedeath', views.upgradedeath, name='upgrade_death')
+    path('/upgradedeath', views.upgradedeath, name='upgrade_death'),
+    path('/reportpdf', views.reportpdf, name='reportpdf')
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

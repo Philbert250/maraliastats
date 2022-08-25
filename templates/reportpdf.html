@@ -1,0 +1,79 @@
+{% load static %}
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                     <span>Time Generated: {{ timesp }}</span>
+                    <h1 class="h3 mb-2 text-gray-800">Malaria Info</h1>
+
+
+
+
+                           <h2 class="h3 mb-2 text-gray-800">All Data's Malaria Case in each category</h2>
+                            <h3 class="m-0 font-weight-bold text-primary">All Cases data</h3>
+                            <div class="table-responsive">
+
+                                <table class="table" border="" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th style="padding: 2px;">Year</th>
+                                            <th style="padding: 2px;">Number of Cases</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                      {% for x in cases %}
+                                        <tr>
+                                            <td style="padding: 2px;">{{ x.year }}</td>
+                                            <td style="padding: 2px;">{{ x.value}}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                <h3 class="m-0 font-weight-bold text-primary">All Severe Case</h3>
+                            <div class="table-responsive">
+
+                                <table class="table" border="" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th style="padding: 2px;">Year</th>
+                                            <th style="padding: 2px;">Number of Cases</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                      {% for x in severecase %}
+                                        <tr>
+                                            <td style="padding: 2px;">{{ x.year }}</td>
+                                            <td style="padding: 2px;">{{ x.value}}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                <h3 class="m-0 font-weight-bold text-primary">All Death data</h3>
+                            <div class="table-responsive">
+                                <table class="table" border="" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th style="padding: 2px;">Year</th>
+                                            <th style="padding: 2px;">Number of Cases</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                      {% for x in deathcase %}
+                                        <tr>
+                                            <td style="padding: 2px;">{{ x.year }}</td>
+                                            <td style="padding: 2px;">{{ x.value}}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                <h2 class="h3 mb-2 text-gray-800">All Data's of Malaria Case in General Structure</h2>
+                           <div class="table-responsive">
+
+                                   {{ general | safe }}
+                           </div>
+
+                </div>
+                <!-- /.container-fluid -->

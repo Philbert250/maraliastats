@@ -1,8 +1,19 @@
+from io import BytesIO
+
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
+from django.template.loader import get_template
+from django.db.models import Sum
+
 from .models import*
 import pandas as pd
+from xhtml2pdf import pisa
+
+from reportlab.pdfgen import canvas
+from reportlab.lib.utils import ImageReader
+from datetime import datetime
 
 # Create your views here.
 
@@ -28,9 +39,15 @@ def logout_user(request):
     return redirect('signing')
 
 def welcome(request):
-    selectcase = CaseData.objects.count()
+    selectcase = CaseData.objects.all()
+    casesum = CaseData.objects.aggregate(Sum('value'))
+    seversum = SevereData.objects.aggregate(Sum('value'))
+    deathsum = DeathData.objects.aggregate(Sum('value'))
     contextdata = {
-        'cases': selectcase
+        'cases': selectcase,
+        'sumcase': casesum,
+        'sumsever': seversum,
+        'sumdeath': deathsum
     }
     return render(request,'index.html', context=contextdata)
 
@@ -199,3 +216,33 @@ def upgradedeath(request):
             return render(request,'upgradedeath.html',{'messagefailed':'fail to insert'})
     return render(request,'upgradedeath.html')
 
+def render_to_pdf(template_src, context_dict={}):
+    template = get_template(template_src)
+    html = template.render(context_dict)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("utf-8")), result)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return None
+
+def reportpdf(request):
+    template = get_template('reportpdf.html')
+    selectcase = CaseData.objects.all()
+    selectdeathcase = DeathData.objects.all()
+    selectseverecase = SevereData.objects.all()
+    qs = GeneralData.objects.all().values()
+    ts = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+    generaldata = qs.to_timeseries(index='year',
+                                   pivot_columns='casename',
+                                   values='value',
+                                   storage='long')
+    contextdata = {
+        'cases': selectcase,
+        'severecase': selectseverecase,
+        'deathcase': selectdeathcase,
+        'timesp': ts,
+        'general': generaldata.to_html(classes='table table-bordered', )
+    }
+    html = template.render(contextdata)
+    pdf = render_to_pdf('reportpdf.html',contextdata)
+    return HttpResponse(pdf, content_type='application/pdf')
